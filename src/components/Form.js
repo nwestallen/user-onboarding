@@ -1,4 +1,5 @@
 //Form component
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as Yup from 'yup';
@@ -11,6 +12,10 @@ margin: auto;
 align-items: center;
 border: 2px solid black;
 padding: 40px 0;
+
+div {
+    margin: 10px 0px;
+}
 
 button {
     width: 200px;
@@ -38,7 +43,7 @@ const formSchema = Yup.object().shape({
 const Form = (props) => {
 
     const { users, setUsers } = props;
-    const [ newUser, setNewUser ] = useState({name: '', email: '', acceptedTerms:false});
+    const [ newUser, setNewUser ] = useState({name: '', email: '', acceptedTerms: false});
     const [disabled, setDisabled] = useState(true);
     const [errors, setErrors] = useState({
         name: '',
@@ -55,7 +60,7 @@ const Form = (props) => {
         formSchema.isValid(newUser).then(valid => {
             setDisabled(!valid);
         })
-    }, [newUser])
+    }, [newUser]);
 
     const handleChange = event => {
         const update = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
@@ -63,23 +68,35 @@ const Form = (props) => {
         setNewUser({...newUser, [event.target.name]: update});
     };
 
+    const handleSubmit = event => {
+        event.preventDefault();
+        axios
+            .post(`https://reqres.in/api/users`, newUser)
+            .then(res => {
+                console.log(res);
+                setUsers([...users, res.data])
+                setNewUser({name: '', email: '', acceptedTerms: false});
+            })
+            .catch(err => console.log(err));
+    }
+
     return(
-        <UserForm>
-            <p>
+        <UserForm onSubmit={handleSubmit}>
+            <div>
                 <label htmlFor='nameInput'>Name: </label>
                 <input id='nameInput' type='text' name='name' value={newUser.name} onChange={handleChange}  />
-                {errors.name.length > 0 && <p class='error'>must include name</p>}
-            </p>
-            <p>
+                {errors.name.length > 0 && <p className='error'>must include name</p>}
+            </div>
+            <div>
                 <label htmlFor='emailInput'>Email: </label>
                 <input id='emailInput' type='text' name='email' value={newUser.email} onChange={handleChange} />
-                {errors.email.length > 0 && <p class='error'>must include valid email</p>}
-            </p>
-            <p>
+                {errors.email.length > 0 && <p className='error'>must include valid email</p>}
+            </div>
+            <div>
                 <label htmlFor='tos'>Agree to Terms of Service</label>
                 <input id='tos' type='checkbox' name='acceptedTerms' checked={newUser.acceptedTerms} onChange={handleChange}/>
-                {errors.acceptedTerms.length > 0 && <p class='error'>must accept terms and conditions</p>}
-            </p>
+                {errors.acceptedTerms.length > 0 && <p className='error'>must accept terms and conditions</p>}
+            </div>
             <button disabled={disabled}>Submit</button>
         </UserForm>
     )
