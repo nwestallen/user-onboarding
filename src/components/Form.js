@@ -7,8 +7,16 @@ const Form = (props) => {
     const UserForm = styled.form`
         display: flex;
         flex-flow: column nowrap;
-        width: 400px;
+        width: 300px;
         margin: auto;
+        align-items: center;
+        border: 2px solid black;
+        padding: 40px 0;
+
+        button {
+            width: 200px;
+            margin-top: 10px;
+        }
     `;
 
     return(
@@ -25,6 +33,7 @@ const Form = (props) => {
                 <label for='tos'>Agree to Terms of Service</label>
                 <input id='tos' type='checkbox' />
             </p>
+            <button>Submit</button>
         </UserForm>
     )
 }
