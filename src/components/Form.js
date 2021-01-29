@@ -35,6 +35,8 @@ const formSchema = Yup.object().shape({
         .string()
         .required('Must include email')
         .email('Must be valid email address'),
+    password: Yup
+        .string(),
     acceptedTerms: Yup
         .boolean()
         .oneOf([true], 'You must accept the Terms and Conditions')
@@ -43,11 +45,12 @@ const formSchema = Yup.object().shape({
 const Form = (props) => {
 
     const { users, setUsers } = props;
-    const [ newUser, setNewUser ] = useState({name: '', email: '', acceptedTerms: false});
+    const [ newUser, setNewUser ] = useState({name: '', email: '', password: '', acceptedTerms: false});
     const [disabled, setDisabled] = useState(true);
     const [errors, setErrors] = useState({
         name: '',
         email: '',
+        password: '',
         acceptedTerms: ''
     });
     const setFormErrors = (name, value) => {
@@ -75,7 +78,7 @@ const Form = (props) => {
             .then(res => {
                 console.log(res);
                 setUsers([...users, res.data])
-                setNewUser({name: '', email: '', acceptedTerms: false});
+                setNewUser({name: '', email: '', password: '', acceptedTerms: false});
             })
             .catch(err => console.log(err));
     }
@@ -91,6 +94,10 @@ const Form = (props) => {
                 <label htmlFor='emailInput'>Email: </label>
                 <input id='emailInput' type='text' name='email' value={newUser.email} onChange={handleChange} />
                 {errors.email.length > 0 && <p className='error'>must include valid email</p>}
+            </div> 
+            <div>
+                <label htmlFor='passwordInput'>Password: </label>
+                <input id='passwordInput' type='text' name='password' value={newUser.password} onChange={handleChange} />
             </div>
             <div>
                 <label htmlFor='tos'>Agree to Terms of Service</label>

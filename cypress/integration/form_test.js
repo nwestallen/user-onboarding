@@ -26,4 +26,9 @@ describe('Controlled input tests for Form component', () => {
         .uncheck()
         .should('not.be.checked')
     })
+
+    it('Able to submit form', () => {
+        cy.get('form')
+        .submit()
+    })
 })
